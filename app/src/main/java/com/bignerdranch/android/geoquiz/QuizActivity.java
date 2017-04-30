@@ -1,7 +1,9 @@
 package com.bignerdranch.android.geoquiz;
 
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,7 @@ public class QuizActivity extends AppCompatActivity {
     private  Button mFalseButton;
     private  Button mNextButton;
     private TextView mQuestionTextView;
+    private Button mPrevButton;
 
     private Question[] mQuestionBank = new Question[]{
             new Question(R.string.question_australia, true),
@@ -56,12 +59,25 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
+        // next button
         mNextButton = (Button) findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
+            }
+        });
+
+        // previous button
+        mPrevButton = (Button) findViewById(R.id.prev_button);
+        mPrevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurrentIndex >= 1) {
+                    mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
+                    updateQuestion();
+                }
             }
         });
 
