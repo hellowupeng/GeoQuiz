@@ -11,4 +11,5 @@
     <string name="next_button">Next</string>
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_totast">Incorrect!</string>
+    <string name="score">Your Scores is 100!</string>
 </resources>

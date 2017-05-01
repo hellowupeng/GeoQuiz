@@ -30,6 +30,7 @@ public class QuizActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
+    private int mScore = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class QuizActivity extends AppCompatActivity {
                 checkAnswer(true);
                 mTrueButton.setEnabled(false);
                 mFalseButton.setEnabled(false);
+                mNextButton.setEnabled(true);
             }
         });
         mFalseButton = (Button) findViewById(R.id.false_button);
@@ -59,17 +61,44 @@ public class QuizActivity extends AppCompatActivity {
                 checkAnswer(false);
                 mTrueButton.setEnabled(false);
                 mFalseButton.setEnabled(false);
+                mNextButton.setEnabled(true);
             }
         });
 
         mNextButton = (Button) findViewById(R.id.next_button);
+        mNextButton.setEnabled(false);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                if (mNextButton.getText() == "Reset") {
+                    mCurrentIndex = 0;
+                    mScore = 0;
+                    updateQuestion();
+                    mTrueButton.setEnabled(true);
+                    mFalseButton.setEnabled(true);
+                    mNextButton.setEnabled(false);
+                    mNextButton.setText("Next");
+                    return;
+                }
+                if (mCurrentIndex == mQuestionBank.length - 2) {
+                    mNextButton.setText("Done");
+                }
+                if (mCurrentIndex == mQuestionBank.length - 1) {
+                    mNextButton.setText("Done");
+                    if (mCurrentIndex == mQuestionBank.length - 1) {
+                        String score = String.format("%.2f", (float)mScore/mQuestionBank.length*100) + "%";
+                        Toast toast = Toast.makeText(QuizActivity.this, "Your Score is " + score, Toast.LENGTH_SHORT);
+                        toast.show();
+
+                        mNextButton.setText("Reset");
+                    }
+                    return;
+                }
+                mCurrentIndex = mCurrentIndex + 1;
                 updateQuestion();
                 mTrueButton.setEnabled(true);
                 mFalseButton.setEnabled(true);
+                mNextButton.setEnabled(false);
             }
         });
 
@@ -125,8 +154,13 @@ public class QuizActivity extends AppCompatActivity {
 
         if (userPressedTrue == answerIsTrue) {
             messageResId = R.string.correct_toast;
+            mScore++;
         } else {
             messageResId = R.string.incorrect_totast;
+            mScore--;
+            if (mScore < 0) {
+                mScore = 0;
+            }
         }
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
